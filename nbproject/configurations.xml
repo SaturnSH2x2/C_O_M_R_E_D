@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="97">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="source">
+        <in>app.h</in>
+        <in>button.h</in>
+        <in>image.h</in>
+        <in>main.cpp</in>
+        <in>menu.h</in>
+        <in>sdfs.c</in>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0"
+                 commonFlags="-march=armv6k -mtune=mpcore -O2 -std=gnu++11 -ffast-math -fno-rtti"/>
+        <element flagsID="1"
+                 commonFlags="-march=armv6k -mtune=mpcore -g -O2 -ffast-math"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="source/app.h" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/bits</pElem>
+            <pElem>source</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/ext</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu/bits</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/debug</pElem>
+            <pElem>/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/5.3.0/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/machine</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/sys</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/services</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/gpu</pElem>
+            <pElem>/opt/devkitpro/libctru/include/c3d</pElem>
+            <pElem>/opt/devkitpro/libctru/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/button.h" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/bits</pElem>
+            <pElem>source</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/ext</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu/bits</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/debug</pElem>
+            <pElem>/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/5.3.0/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/machine</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/sys</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/services</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/gpu</pElem>
+            <pElem>/opt/devkitpro/libctru/include/c3d</pElem>
+            <pElem>/opt/devkitpro/libctru/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/image.h" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="source/main.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/bits</pElem>
+            <pElem>source</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/ext</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu/bits</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/debug</pElem>
+            <pElem>/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/5.3.0/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/machine</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/sys</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/services</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/gpu</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/ndsp</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/applets</pElem>
+            <pElem>/opt/devkitpro/libctru/include/c3d</pElem>
+            <pElem>/opt/devkitpro/libctru/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/menu.h" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/bits</pElem>
+            <pElem>source</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/ext</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu/bits</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/debug</pElem>
+            <pElem>/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/5.3.0/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/machine</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/sys</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/services</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/gpu</pElem>
+            <pElem>/opt/devkitpro/libctru/include/c3d</pElem>
+            <pElem>/opt/devkitpro/libctru/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/c++/5.3.0/arm-none-eabi/armv6k/fpu</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/sdfs.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/5.3.0/include</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include/machine</pElem>
+            <pElem>/opt/devkitpro/devkitARM/arm-none-eabi/include</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/services</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/gpu</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/ndsp</pElem>
+            <pElem>/opt/devkitpro/libctru/include/3ds/util</pElem>
+            <pElem>/opt/devkitpro/libctru/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </cTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
