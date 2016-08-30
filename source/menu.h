@@ -122,7 +122,7 @@ namespace menu {
         sf2d_texture *flush;
         int i;
         
-        for (i = 0; i < 20; i++) {
+        for (i = 0; i < 15; i++) {
             flush = sfil_load_PNG_buffer(clear_png, SF2D_PLACE_RAM);
             sf2d_free_texture(flush);
         }
@@ -277,22 +277,16 @@ namespace menu {
         sf2d_draw_texture(tex, 0, 0);
     }
     
-    void read_comic(std::string path, std::string zeroes, std::string theme) {
-        
+    void read_comic(std::string path, std::string zeroes, std::string theme) {        
         app::CALLBACK_T cb;
         app::VIEWMODE_T vm; vm = app::TWO_SCREEN;
         
-        char *cpath = new char;
-        cpath = (char*) path.c_str();
-        
-        char *img_buffer;
-        unsigned long img_size;
+        char *cpath = (char*) path.c_str();
 
         mlisting->Clear();
         switch_dir(mlisting, cpath, 0);
         
         int counter = 1;
-        //int i = 0;
         
         std::string full_path;   
         
@@ -302,10 +296,6 @@ namespace menu {
         
         bool is_loop = true;
         
-        flush_out_sf2d();
-        free_theme(main_theme);
-        sf2d_swapbuffers();        
-        
         while (true) {
             chr_counter =    to_string(counter);
             chr_counter_p1 = to_string(counter + 1);
@@ -314,34 +304,19 @@ namespace menu {
             full_path = path + "/" + zeroes + chr_counter + mlisting->extensions[counter];
             sf2d_pool_reset();
             
-            img_buffer = rf::read_bin(full_path);
-            img_size   = rf::read_size(full_path);
-            
-            if (cb != app::SWITCH_MODE) flush_out_sf2d();
-            
+            // TODO: add automatic image resizing
             if (strcmp(mlisting->extensions[counter], ".png") == 0 || strcmp(mlisting->extensions[counter], ".PNG") == 0) {
-                image = sfil_load_PNG_buffer(img_buffer, SF2D_PLACE_RAM);
+                image = sfil_load_PNG_file(full_path.c_str(), SF2D_PLACE_RAM);
             } else if (strcmp(mlisting->extensions[counter], ".jpg") == 0 || strcmp(mlisting->extensions[counter], ".JPG") == 0) {
-                image = sfil_load_JPEG_buffer(img_buffer, img_size, SF2D_PLACE_RAM);
+                image = sfil_load_JPEG_file(full_path.c_str(), SF2D_PLACE_RAM);
             } else if (strcmp(mlisting->extensions[counter], ".bmp") == 0 || strcmp(mlisting->extensions[counter], ".BMP") == 0) {
-                image = sfil_load_BMP_buffer(img_buffer, SF2D_PLACE_RAM);
+                image = sfil_load_BMP_file(full_path.c_str(), SF2D_PLACE_RAM);
             } else {
                 printf("Error!\n");
                 return;
             }
             
-            //sf2d_pool_reset();
-            
-            //sf2d_draw_texture(image, 0, 0);
-            //sf2d_swapbuffers();
-            
-            //while (i < 50000) {
-            //    i++;
-            //}            
-            
-            //image = sfil_load_PNG_file("/data/C_O_M_R_E_D/test.png", SF2D_PLACE_RAM);
-            
-            cb = app::run_img(image, theme, vm, false);
+            cb = app::run_img(image, theme, vm);
             
             switch (cb) {
                 case app::NEXT:
@@ -357,31 +332,13 @@ namespace menu {
                     break;
             };
             
-            C3D_TexDelete(&image->tex);
-            delete img_buffer;
+            sf2d_free_texture(image);
            
             if (is_loop == false) break;
         }
         
         mlisting->Clear();
         sdfs_free();        
-        
-        printf("Exited loop.\n");
-   
-        if (cpath) {
-            delete cpath;
-            printf("Clear path.\n");
-        } else {
-            printf("No path to delete.\n");
-        }
-        
-        if (img_buffer) {
-            delete img_buffer;
-        } 
-        
-        load_theme(theme);
-
-        printf("Exiting function...\n");
     }
     
     void main_menu(std::string theme) {        
@@ -429,17 +386,11 @@ namespace menu {
         }
     }
     
-    void read_cb(std::string theme) {
-        //sf2d_texture *top_scr_bg = load_theme_image(theme, "opt_top_scr_bg.png");
-        //consoleInit(GFX_BOTTOM, &bottom);    
-        //consoleClear();
-        
+    void read_cb(std::string theme) {        
         std::string path = "/data/C_O_M_R_E_D/comics";
-        //char *cwd  = "/";
        
         int index = 0;
         int cursor = 0;
-        //int prev_cursor;
         
         std::string zeroes;
         std::string select;
@@ -447,19 +398,13 @@ namespace menu {
         bool is_comdir;
         bool selected = false;
         
-        //directory_listing* listing = new directory_listing;
-        
         mlisting->Clear();
         switch_dir(mlisting, (char*) path.c_str(), (char*)-1);
-        
-        //sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-        //sf2d_end_frame();
         
         while (aptMainLoop()) {
             hidScanInput();
             
             u32 kDown = hidKeysDown();
-            //u32 kHeld = hidKeysHeld(); 
             
             if (kDown & KEY_B) break;
             
@@ -478,6 +423,11 @@ namespace menu {
                 if (index > 0) index -= 1;
             }
             
+            if (kDown & KEY_A) {
+                selected = true;
+                break;
+            } 
+            
             select = path;
             select = select + mlisting->files[cursor];
             
@@ -489,15 +439,7 @@ namespace menu {
             display_directories(mlisting->files, LIST_LIMIT, MAX_ONSCREEN, index, cursor, "Select a comic/manga.");
             sf2d_end_frame();
             
-            //printf("\x1b[15;0H%d  %d  %d", listing->max_entries, index, cursor);
-            //if (prev_cursor != cursor) consoleClear();
-            
-            sf2d_swapbuffers();
-            
-            if (kDown & KEY_A) {
-                selected = true;
-                break;
-            } 
+            sf2d_swapbuffers();                        
         }
         
         sdfs_free();
@@ -573,14 +515,6 @@ namespace menu {
             
             sf2d_swapbuffers();
         }
-        
-        //printf("Deleting top_scr_bg pointer...\n");
-        //sf2d_free_texture(top_scr_bg); //delete top_scr_bg;
-        //printf("Deleted top_scr_bg successfully.\n");
-        //reboot_sf2d();
-        //consoleInit(GFX_BOTTOM, &bottom);
-        //printf("Ended function.\n");
-        //consoleExit();
     }
     
     void run() {
@@ -623,6 +557,7 @@ namespace menu {
         
         sf2d_free_texture(image);
         
+        sdfs_free();
         mlisting->Clear();
         delete mlisting;
         

@@ -48,7 +48,7 @@ namespace app {
     
     bool is_button_touched;
     
-    CALLBACK_T run_img(sf2d_texture *image, std::string theme, VIEWMODE_T &mode, bool is_2DS);
+    CALLBACK_T run_img(sf2d_texture *image, std::string theme, VIEWMODE_T &mode);
     
     void zoom(int func) {
         switch (func) {
@@ -107,7 +107,7 @@ namespace app {
   
     PrintConsole top, bottom;
     
-    CALLBACK_T image_one_screen(sf2d_texture *image, std::string theme, VIEWMODE_T mode, bool is_2DS) {
+    CALLBACK_T image_one_screen(sf2d_texture *image, std::string theme, VIEWMODE_T mode) {
         //consoleInit(GFX_BOTTOM, &bottom);   
         loc_x = 0;
         loc_y = 0;
@@ -161,13 +161,13 @@ namespace app {
                         }
                     } else if (mode == TWO_SCREEN_R) {
                         if (not (kDown & KEY_TOUCH)) {
-                            loc_x -= (ty - pty);
-                            loc_y += (tx - ptx);
+                            loc_y += (ty - pty);
+                            loc_x += (tx - ptx);
                         }
                     } else if (mode == TWO_SCREEN_L) {
                         if (not (kDown & KEY_TOUCH)) {
-                            loc_x += (ty - pty);
-                            loc_y -= (tx - ptx);
+                            loc_y += (ty - pty);
+                            loc_x += (tx - ptx);
                         }
                     }
                 }     
@@ -220,16 +220,16 @@ namespace app {
             
             switch (mode) {
                 case ONE_SCREEN:
-                    img::draw_screens_os(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn, &menu_btn, &switch_mode_btn, is_2DS);
+                    img::draw_screens_os(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn, &menu_btn, &switch_mode_btn);
                     break;
                 case TWO_SCREEN:
-                    img::draw_screens_ts(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn, is_2DS);
+                    img::draw_screens_ts(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn);
                     break;
                 case TWO_SCREEN_R:
-                    img::draw_screens_tsr(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn, is_2DS);
+                    img::draw_screens_tsr(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn);
                     break;
                 case TWO_SCREEN_L:
-                    img::draw_screens_tsl(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn, is_2DS);
+                    img::draw_screens_tsl(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn);
                     break;
                 default:
                     break;              
@@ -245,10 +245,10 @@ namespace app {
         return function_cb;
     }
     
-    CALLBACK_T run_img (sf2d_texture *image, std::string theme, VIEWMODE_T &mode, bool is_2DS) {
+    CALLBACK_T run_img (sf2d_texture *image, std::string theme, VIEWMODE_T &mode) {
         CALLBACK_T cb;
         while (true) {
-            cb = image_one_screen(image, theme, mode, is_2DS);
+            cb = image_one_screen(image, theme, mode);
             //consoleInit(GFX_BOTTOM, &bottom);
             //consoleClear();
             //printf("Exited loop.\n");
@@ -267,7 +267,7 @@ namespace app {
                     continue;
                 }
                 else if (mode == TWO_SCREEN_R) {
-                    mode = ONE_SCREEN;   
+                    mode = TWO_SCREEN;   
                     continue;
                 }
             } else {
@@ -281,7 +281,7 @@ namespace app {
 
     }
     
-    CALLBACK_T run_img (std::string path, char ext[16], std::string theme, VIEWMODE_T &mode, bool is_2DS) {
+    CALLBACK_T run_img (std::string path, char ext[16], std::string theme, VIEWMODE_T &mode) {
         sf2d_texture *image;
         CALLBACK_T cb;
         
@@ -296,7 +296,7 @@ namespace app {
                 return MENU;
             }
         
-        cb = run_img(image, theme, mode, is_2DS);
+        cb = run_img(image, theme, mode);
         sf2d_free_texture(image);
         
         return cb;
