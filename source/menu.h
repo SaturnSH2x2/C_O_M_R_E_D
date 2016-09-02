@@ -34,7 +34,7 @@
 #include "app.h"
 #include "button.h"
 
-#include "clear_png.h"
+//#include "clear_png.h"
 
 namespace menu {
     PrintConsole top, bottom;
@@ -71,6 +71,7 @@ namespace menu {
         sf2d_texture *top_scr_bg_mm;
         sf2d_texture *bot_scr_bg_mm;
         sf2d_texture *top_scr_bg_opt;
+        sf2d_texture *bot_scr_bg_opt;
         
         sftd_font *font;
         
@@ -78,6 +79,11 @@ namespace menu {
         btn::Button *dwnld_btn;
         btn::Button *opt_btn;
         btn::Button *exit_btn;
+        
+        u32 top_scr_color;
+        u32 bot_scr_color;
+        u32 numpad_color;
+        u32 select_color;
         
         std::string theme_name;
     };
@@ -90,6 +96,7 @@ namespace menu {
         sf2d_free_texture(theme.top_scr_bg_mm);
         sf2d_free_texture(theme.bot_scr_bg_mm);
         sf2d_free_texture(theme.top_scr_bg_opt);
+        sf2d_free_texture(theme.bot_scr_bg_opt);
         
         sftd_free_font(theme.font);
         
@@ -98,7 +105,7 @@ namespace menu {
         delete theme.opt_btn;
         delete theme.exit_btn;
     }
-    
+
     std::string to_string(int i) {
         std::stringstream ss;
         std::string result;
@@ -107,28 +114,6 @@ namespace menu {
         ss >> result;
         
         return result;
-    }
-    
-    void reboot_sf2d() {
-        //printf("Prepare to perform operations...\n");
-        
-        sf2d_fini();
-        sf2d_init();
-        
-        //printf("Operations finished successfulyy.\n");
-    }
-    
-    void flush_out_sf2d() {
-        sf2d_texture *flush;
-        int i;
-        
-        for (i = 0; i < 15; i++) {
-            flush = sfil_load_PNG_buffer(clear_png, SF2D_PLACE_RAM);
-            sf2d_free_texture(flush);
-        }
-        
-        //if (flush) delete flush;
-        
     }
     
     void read() {
@@ -153,6 +138,7 @@ namespace menu {
         theme.top_scr_bg_mm = load_theme_image(theme_name,  "mm_top_scr_bg.png");
         theme.bot_scr_bg_mm = load_theme_image(theme_name,  "mm_bot_scr_bg.png");
         theme.top_scr_bg_opt = load_theme_image(theme_name, "opt_top_scr_bg.png");
+        theme.bot_scr_bg_opt = load_theme_image(theme_name, "opt_bot_scr_bg.png");
         
         theme.font = sftd_load_font_file(("/data/C_O_M_R_E_D/themes/" + theme_name + "/font.ttf").c_str());
         
@@ -162,6 +148,8 @@ namespace menu {
         theme.exit_btn  = new btn::Button (theme_name, "exit_btn.png", exit, 20, 140);
         
         theme.theme_name = theme_name;
+        
+        rf::read_theme_config(theme_name, theme.top_scr_color, theme.bot_scr_color, theme.numpad_color, theme.select_color);                
         
         return theme;
     }
@@ -181,34 +169,31 @@ namespace menu {
         return number_of_unempty_entries;
     }
     
-    void display_directories(char list[][262], const int LIST_LIMIT, const int MAX_ONSCREEN, int index, int cursor, const char *arg) {
-        //consoleClear();
-            
+    void display_image(sf2d_texture *tex);
+    
+    void display_directories(char list[][262], const int LIST_LIMIT, const int MAX_ONSCREEN, int index, int cursor, const char *arg) {   
         int scr_indx = 0;
-        //int pscr_indx = scr_indx + 1;
         int i;
         
         std::string buf = "";
         
-        //printf("\x1b[0;0H");
-        sftd_draw_text(main_theme.font, 4, 0, RGBA8(0xFF, 0xFF, 0xFF, 0xFF), 12, arg);
-        sftd_draw_text(main_theme.font, 4, 15, RGBA8(0xFF, 0xFF, 0xFF, 0xFF), 12, "----------------------------------");
+        display_image(main_theme.bot_scr_bg_opt);
+
+        sftd_draw_text(main_theme.font, 4, 0, main_theme.bot_scr_color, 12, arg);
+        sftd_draw_text(main_theme.font, 4, 15, main_theme.bot_scr_color, 12, "--------------------------------------------");
             
         for (i = index; i < index + MAX_ONSCREEN; i++) {
-            buf = "";
+            buf = "  ";
             
             if (cursor == i) {
-                buf = "> " + buf;
-            } else {
-                buf = buf + "  ";
-            }
+                sf2d_draw_rectangle(0, ((i - index) * 15) + 30, 320, 15, main_theme.select_color);
+            } 
             
             buf = buf + list[i];
             
-            sftd_draw_text(main_theme.font, 4, ((i - index) * 15) + 30, RGBA8(0xFF, 0xFF, 0xFF, 0xFF), 12, buf.c_str());
+            sftd_draw_text(main_theme.font, 4, ((i - index) * 15) + 30, main_theme.bot_scr_color, 12, buf.c_str());
                 
             scr_indx += 1;
-            //pscr_indx = scr_indx + 1;
         }
     }
     
@@ -256,6 +241,33 @@ namespace menu {
         return false;
     }
     
+    void numpad(int &counter, std::string path) {
+        // TODO:  fix slight page bug
+        try_again:
+        
+        static SwkbdState kb;
+        static char buf[8];
+        SwkbdButton button = SWKBD_BUTTON_NONE;
+        int takeaway;
+        
+        if (rf::does_file_exist(path)) {
+            takeaway = 1;
+        } else {
+            takeaway = 0;
+        }
+        
+        swkbdInit(&kb, SWKBD_TYPE_NUMPAD, 1, 8);
+        swkbdSetValidation(&kb, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
+        swkbdSetPasswordMode(&kb, SWKBD_PASSWORD_NONE);
+        swkbdSetFeatures(&kb, SWKBD_FIXED_WIDTH);
+        
+        button = swkbdInputText(&kb, buf, sizeof(buf));
+        
+        counter = atoi(buf);
+        
+        if (counter < 1 || counter > mlisting->max_entries - takeaway) goto try_again;
+    }
+    
     void switch_dir(directory_listing *listing, char *path, char *ext) {
         sdfs_init(path); 
         listing->Clear();
@@ -286,7 +298,9 @@ namespace menu {
         mlisting->Clear();
         switch_dir(mlisting, cpath, 0);
         
-        int counter = 1;
+        int counter = rf::load_page(path);
+        if (counter > mlisting->max_entries) counter = 1;
+        if (counter < 0)                     counter = 1;
         
         std::string full_path;   
         
@@ -328,6 +342,9 @@ namespace menu {
                 case app::MENU:
                     is_loop = false;
                     break;
+                case app::SWITCH_PAGE:
+                    numpad(counter, path + "/page.txt");
+                    break;
                 default:
                     break;
             };
@@ -336,6 +353,8 @@ namespace menu {
            
             if (is_loop == false) break;
         }
+        
+        rf::save_page(counter, path);
         
         mlisting->Clear();
         sdfs_free();        
@@ -388,25 +407,30 @@ namespace menu {
     
     void read_cb(std::string theme) {        
         std::string path = "/data/C_O_M_R_E_D/comics";
-       
+        std::string orig_path = path;
+        
+        mlisting->Clear();
+        switch_dir(mlisting, (char*) path.c_str(), (char*)-1);        
+        
+        restart:
+        
         int index = 0;
         int cursor = 0;
+        //int i;
         
         std::string zeroes;
         std::string select;
         
         bool is_comdir;
         bool selected = false;
-        
-        mlisting->Clear();
-        switch_dir(mlisting, (char*) path.c_str(), (char*)-1);
-        
+        bool back = false;
+                    
         while (aptMainLoop()) {
             hidScanInput();
             
             u32 kDown = hidKeysDown();
             
-            if (kDown & KEY_B) break;
+            if (kDown & KEY_B) back = true;
             
             if (kDown & KEY_UP)   cursor -= 1;
             if (kDown & KEY_DOWN) cursor += 1;                        
@@ -426,7 +450,9 @@ namespace menu {
             if (kDown & KEY_A) {
                 selected = true;
                 break;
-            } 
+            }
+            
+            //if (kDown & KEY_SELECT) break;
             
             select = path;
             select = select + mlisting->files[cursor];
@@ -439,17 +465,45 @@ namespace menu {
             display_directories(mlisting->files, LIST_LIMIT, MAX_ONSCREEN, index, cursor, "Select a comic/manga.");
             sf2d_end_frame();
             
-            sf2d_swapbuffers();                        
+            sf2d_swapbuffers();   
+            
+            if (back) break;
         }
         
         sdfs_free();
-        
         if (selected) {
             is_comdir = is_comic_directory(select, zeroes);
                 
             if (is_comdir) {                
                 read_comic(select, zeroes, theme);
+            } else if (back == false) {
+                mlisting->Clear();
+                switch_dir(mlisting, (char*) select.c_str(), (char*)-1);
+                path = select;                
+                goto restart;
+            } 
+        }
+        
+        if (back == true) {
+            back = false;
+                
+            if (path.compare(orig_path) == 0) {
+                return;
             }
+                
+            while (true) {
+                if (path.at(path.length() - 1) == '/') {
+                    path.erase(path.length() - 1, 1);
+                    break;
+                } else {
+                    path.erase(path.length() - 1, 1);
+                }
+            }
+                
+            mlisting->Clear();
+            switch_dir(mlisting, (char*) path.c_str(), (char*)-1);
+                
+            goto restart;
         }
     }
     

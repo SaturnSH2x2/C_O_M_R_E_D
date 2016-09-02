@@ -120,7 +120,7 @@ namespace img {
         sf2d_end_frame();
     }
    
-   void draw_screens_ts (sf2d_texture *img, float loc_x, float loc_y, float scale, btn::Button *b1, btn::Button *b2, btn::Button *b3, btn::Button *b4, btn::Button *b5, btn::Button *b6) {
+   void draw_screens_ts (sf2d_texture *img, float loc_x, float loc_y, float scale, btn::Button *b1, btn::Button *b2, btn::Button *b3, btn::Button *b4, btn::Button *b5, btn::Button *b6, btn::Button *b7) {
        u8 is_2DS;
        CFGU_GetModelNintendo2DS(&is_2DS);
        
@@ -144,10 +144,11 @@ namespace img {
        b4->draw_button();
        b5->draw_button();
        b6->draw_button();
+       b7->draw_button();
        sf2d_end_frame();
    }
    
-   void draw_screens_tsr (sf2d_texture *img, float loc_x, float loc_y, float scale, btn::Button *b1, btn::Button *b2, btn::Button *b3, btn::Button *b4, btn::Button *b5, btn::Button *b6) {
+   void draw_screens_tsr (sf2d_texture *img, float loc_x, float loc_y, float scale, btn::Button *b1, btn::Button *b2, btn::Button *b3, btn::Button *b4, btn::Button *b5, btn::Button *b6, btn::Button *b7) {
        u8 is_2DS;
        CFGU_GetModelNintendo2DS(&is_2DS);
        
@@ -171,10 +172,11 @@ namespace img {
        b4->draw_button(M_PI / 2.0);
        b5->draw_button(M_PI / 2.0);
        b6->draw_button(M_PI / 2.0);
+       b7->draw_button(M_PI / 2.0);
        sf2d_end_frame();
    }
    
-   void draw_screens_tsl(sf2d_texture *img, float loc_x, float loc_y, float scale, btn::Button *b1, btn::Button *b2, btn::Button *b3, btn::Button *b4, btn::Button *b5, btn::Button *b6) {
+   void draw_screens_tsl(sf2d_texture *img, float loc_x, float loc_y, float scale, btn::Button *b1, btn::Button *b2, btn::Button *b3, btn::Button *b4, btn::Button *b5, btn::Button *b6, btn::Button *b7) {
        u8 is_2DS;
        CFGU_GetModelNintendo2DS(&is_2DS);
        
@@ -197,6 +199,7 @@ namespace img {
        b4->draw_button((3.0 * M_PI) / 2.0);
        b5->draw_button((3.0 * M_PI) / 2.0);
        b6->draw_button((3.0 * M_PI) / 2.0);
+       b7->draw_button((3.0 * M_PI) / 2.0);
        sf2d_end_frame();
    }
 }

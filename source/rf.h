@@ -54,6 +54,74 @@ namespace rf {
         return contents;
     }
     
+    bool does_file_exist(std::string filename);
+    
+    // reads designated font colors from config file
+    void read_theme_config(std::string theme, u32 &top_scr, u32 &bot_scr, u32 &numpad, u32 &selection) {
+        std::string DESCRIPTORS[4];
+        DESCRIPTORS[0] = "[topScreenFontColor]";
+        DESCRIPTORS[1] = "[bottomScreenFontColor]";
+        DESCRIPTORS[2] = "[numpadFontColor]";
+        DESCRIPTORS[3] = "[selectionFontColor]";
+        
+        stringstream ss;
+        
+        std::string strbuf;
+        
+        int line_it = 0;
+        int descriptor_it;
+        int lines = number_of_lines("/data/C_O_M_R_E_D/themes/" + theme + "/theme.txt");
+        
+        int R;
+        int G;
+        int B;
+        
+        ifstream file("/data/C_O_M_R_E_D/themes/" + theme + "/theme.txt");
+        
+        if (file.is_open()) {
+            while (line_it < lines) {
+                std::getline(file, strbuf);
+                strbuf.erase(strbuf.size() - 1);
+                
+                for (descriptor_it = 0; descriptor_it < 4; descriptor_it++) {
+                    if (strbuf.compare(DESCRIPTORS[descriptor_it]) == 0) {
+                        line_it += 3;
+                        
+                        // reads as hex values
+                        std::getline(file, strbuf); ss << std::hex << strbuf;  ss >> R;  
+                        std::getline(file, strbuf); ss << std::hex << strbuf;  ss >> G;
+                        std::getline(file, strbuf); ss << std::hex << strbuf;  ss >> B;
+                        
+                        if (R > 0xFF) break;
+                        if (G > 0xFF) break;
+                        if (B > 0xFF) break;
+                        
+                        switch (descriptor_it) {
+                            case 0:
+                                top_scr = RGBA8(R, G, B, 0xFF);
+                                break;
+                            case 1:
+                                bot_scr = RGBA8(R, G, B, 0xFF);
+                                break;
+                            case 2:
+                                numpad = RGBA8(R, G, B, 0xFF);
+                                break;
+                            case 3:
+                                selection = RGBA8(R, G, B, 0x80);
+                                break;
+                            default:
+                                return;
+                                break;
+                        };
+                    }
+                }
+                
+                line_it += 1;
+            }                        
+            file.close();
+        }
+    }
+    
     bool does_file_exist(std::string filename) {
         ifstream file(filename.c_str(), std::ios::binary);
         
@@ -115,6 +183,43 @@ namespace rf {
         }
         
         return number_of_lines;
+    }
+    
+    void save_page(int index, std::string path) {
+        std::string full_path = path + "/page.txt";
+        
+        std::stringstream ss;
+        std::string str_index;
+        
+        ss << index;
+        ss >> str_index;
+        
+        ofstream file (full_path.c_str(), ios::trunc);
+        
+        if (file.is_open()) {
+            file << str_index;
+            file.close();
+        } 
+    }
+    
+    int load_page(std::string path) {
+        int index;
+        std::string str_index;
+        
+        path = path + "/page.txt";
+        
+        ifstream file (path.c_str());
+        
+        if (file.is_open()) {
+            std::getline(file, str_index);
+            file.close();
+        } else {
+            return 1;
+        }
+        
+        index = atoi(str_index.c_str());
+        
+        return index;
     }
 }
 

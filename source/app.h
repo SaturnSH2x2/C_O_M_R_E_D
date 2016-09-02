@@ -28,7 +28,7 @@
 using namespace btn;
 
 namespace app {
-    enum CALLBACK_T {NADA = 0, PREV, NEXT, MENU, SWITCH_MODE};
+    enum CALLBACK_T {NADA = 0, PREV, NEXT, MENU, SWITCH_MODE, SWITCH_PAGE};
     enum VIEWMODE_T {ONE_SCREEN, TWO_SCREEN, TWO_SCREEN_L, TWO_SCREEN_R};
     
     const int IN  = 0;
@@ -64,7 +64,7 @@ namespace app {
         };
         
         if (scale < 150.0)  scale = 150.0;
-        if (scale > 800.0)  scale = 800.0;
+        if (scale > 900.0)  scale = 900.0;
         
         return;
     }
@@ -93,6 +93,10 @@ namespace app {
         function_cb = SWITCH_MODE;
     }
     
+    void switch_page() {
+        function_cb = SWITCH_PAGE;
+    }
+    
     /// TODO:  fix this?  touch support is a little weird
     void convert_coords(sf2d_texture *img, int tx, int ty) {
         float s_width  = (float) img->width / 400.0;
@@ -108,9 +112,22 @@ namespace app {
     PrintConsole top, bottom;
     
     CALLBACK_T image_one_screen(sf2d_texture *image, std::string theme, VIEWMODE_T mode) {
-        //consoleInit(GFX_BOTTOM, &bottom);   
-        loc_x = 0;
-        loc_y = 0;
+        switch (mode) {
+            case (TWO_SCREEN_R):   // TWO_SCREEN_L/R
+                loc_x = -100;
+                loc_y = 160;
+                break;
+            case (TWO_SCREEN_L):
+                loc_x = 100;
+                loc_y = 100;
+                break;
+            default:
+                loc_x = 0;
+                loc_y = 0;
+                break;
+        }
+        
+        scale = 400.0;
         
         touchPosition touch;
         
@@ -121,13 +138,16 @@ namespace app {
               
         // yes, the dimensions of the buttons are hard-coded.  make sure you have your image sizes right.
         btn::Button zm_in_btn (     theme, "zoom_in.png",     zoom_in,     0.0F,   240.0 - 35.0F);
-        btn::Button zm_out_btn(     theme, "zoom_out.png",    zoom_out,    50.0F,  240.0F - 35.0F);
-        btn::Button prv_pg_btn(     theme, "prev_pg.png",     prev_pg,     100.0F, 240.0F - 35.0F);
-        btn::Button nxt_pg_btn(     theme, "next_pg.png",     next_pg,     150.0F, 240.0F - 35.0F);
+        btn::Button zm_out_btn(     theme, "zoom_out.png",    zoom_out,    40.0F,  240.0F - 35.0F);
+        btn::Button prv_pg_btn(     theme, "prev_pg.png",     prev_pg,     80.0F, 240.0F - 35.0F);
+        btn::Button nxt_pg_btn(     theme, "next_pg.png",     next_pg,     120.0F, 240.0F - 35.0F);
         btn::Button menu_btn  (     theme, "menu.png",        to_menu,     320.0F - 35.0F, 240.0F - 35.0F);
-        btn::Button switch_mode_btn(theme, "switch_mode.png", switch_mode, 200.0F, 240.0F - 35.0F);
+        btn::Button switch_mode_btn(theme, "switch_mode.png", switch_mode, 160.0F, 240.0F - 35.0F);
+        btn::Button switch_page_btn(theme, "switch_page.png", switch_page, 200.0F, 240.0F - 35.0F);
         
         sf2d_set_clear_color(RGBA8(0x00, 0x00, 0x00, 0xFF));
+        
+        //start_loop:
     
         while (aptMainLoop()) {
             hidScanInput();
@@ -147,6 +167,7 @@ namespace app {
                 is_button_touched = (is_button_touched || prv_pg_btn.button_touch_cb(tx, ty));
                 is_button_touched = (is_button_touched || menu_btn.button_touch_cb(tx, ty));
                 is_button_touched = (is_button_touched || switch_mode_btn.button_touch_cb(tx, ty));
+                is_button_touched = (is_button_touched || switch_page_btn.button_touch_cb(tx, ty));
                 
                 button_touch_prev_frame = is_button_touched;                
             } 
@@ -186,18 +207,18 @@ namespace app {
                 if (kDown & KEY_DLEFT)  prev_pg();
                 if (kDown & KEY_DRIGHT) next_pg();                
             } else if (mode == TWO_SCREEN_R) {
-                if (kHeld & KEY_CPAD_UP)    loc_x -= SPEED;
-                if (kHeld & KEY_CPAD_DOWN)  loc_x += SPEED;
-                if (kHeld & KEY_CPAD_LEFT)  loc_y += SPEED;
-                if (kHeld & KEY_CPAD_RIGHT) loc_y -= SPEED;
+                if (kHeld & KEY_CPAD_UP)    loc_y += SPEED;
+                if (kHeld & KEY_CPAD_DOWN)  loc_y -= SPEED;
+                if (kHeld & KEY_CPAD_LEFT)  loc_x += SPEED;
+                if (kHeld & KEY_CPAD_RIGHT) loc_x -= SPEED;
                 
                 if (kDown & KEY_DUP)  prev_pg();
                 if (kDown & KEY_DDOWN) next_pg(); 
             } else if (mode == TWO_SCREEN_L) {
-                if (kHeld & KEY_CPAD_UP)    loc_x += SPEED;
-                if (kHeld & KEY_CPAD_DOWN)  loc_x -= SPEED;
-                if (kHeld & KEY_CPAD_LEFT)  loc_y -= SPEED;
-                if (kHeld & KEY_CPAD_RIGHT) loc_y += SPEED;
+                if (kHeld & KEY_CPAD_UP)    loc_y += SPEED;
+                if (kHeld & KEY_CPAD_DOWN)  loc_y -= SPEED;
+                if (kHeld & KEY_CPAD_LEFT)  loc_x += SPEED;
+                if (kHeld & KEY_CPAD_RIGHT) loc_x -= SPEED;
                 
                 if (kDown & KEY_DDOWN)  prev_pg();
                 if (kDown & KEY_DUP) next_pg(); 
@@ -223,13 +244,13 @@ namespace app {
                     img::draw_screens_os(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn, &menu_btn, &switch_mode_btn);
                     break;
                 case TWO_SCREEN:
-                    img::draw_screens_ts(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn);
+                    img::draw_screens_ts(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn, &switch_page_btn);
                     break;
                 case TWO_SCREEN_R:
-                    img::draw_screens_tsr(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn);
+                    img::draw_screens_tsr(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn, &switch_page_btn);
                     break;
                 case TWO_SCREEN_L:
-                    img::draw_screens_tsl(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn);
+                    img::draw_screens_tsl(image, loc_x, loc_y, scale, &zm_in_btn, &zm_out_btn, &nxt_pg_btn, &prv_pg_btn,  &switch_mode_btn, &menu_btn, &switch_page_btn);
                     break;
                 default:
                     break;              
