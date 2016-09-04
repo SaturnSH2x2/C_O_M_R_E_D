@@ -580,7 +580,7 @@ namespace menu {
         
         //MM_CALLBACK_T opt;
         
-        while (true) {
+        while (aptMainLoop()) {
             //printf("Starting a new loop iteration...\n");
             main_menu(theme);
         
