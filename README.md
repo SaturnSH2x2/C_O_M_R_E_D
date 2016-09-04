@@ -1,7 +1,7 @@
 # C_O_M_R_E_D
 Open source theme-able comic reader for the 3DS.  
 
-In it's current state, this homebrew is unusable.  The app crashes when exiting a comic and opening another comic.  Only a theme named "test" is loaded from the SD Card (and it has totally unstylish design choices).  The code's a complete and utter mess.  Do NOT expect this to be a release of any sort.  However, if you want to try it out anyways, you'll need to compile it.  Be sure to put the /data/ folder at the root of your SD Card.
+In it's current state, this homebrew is incomplete.  Only a theme named "test" is loaded from the SD Card (and it has totally unstylish design choices).  The code's a complete and utter mess.  Do NOT expect this to be a release of any sort.  However, if you want to try it out anyways, you'll need to compile it.  Be sure to put the /data/ folder at the root of your SD Card.
 
 Currently Implemented Features:
 * Read a folder full of images as a comic (supported extensions are .jpg, .png, and .bmp)
