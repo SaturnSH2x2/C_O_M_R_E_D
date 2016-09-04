@@ -35,9 +35,9 @@ SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 
-APP_TITLE	:= SFILLIB sample
-APP_DESCRIPTION	:= SFILLIB sample
-APP_AUTHOR	:= xerpi
+APP_TITLE	:= C_O_M_R_E_D
+APP_DESCRIPTION	:= Comic/Manga Reader!
+APP_AUTHOR	:= B_E_P_I_S_M_A_N
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -146,10 +146,13 @@ cci: $(TARGET)-strip.elf
 	@echo "built ... sfil_sample.3ds"
 #---------------------------------------------------------------------------------
 cia: $(TARGET)-strip.elf
-	@makerom -f cia -o $(TARGET).cia -elf $(TARGET)-strip.elf -rsf resources/$(TARGET).rsf -exefslogo -target t
-	@echo "built ... sfil_sample.cia"
+	@bannertool makebanner -i resources/logo.png -a resources/audio.wav -o resources/banner.bnr
+	@bannertool makesmdh -s "C_O_M_R_E_D" -l "C_O_M_R_E_D - Comic Reader" -p "B_E_P_I_S_M_A_N" -i resources/icon.png -o resources/icon.icn
+	@makerom -f cia -o $(TARGET).cia -DAPP_ENCRYPTED=false -elf $(TARGET)-strip.elf -rsf resources/$(TARGET).rsf -exefslogo -target t -icon resources/icon.icn -banner resources/banner.bnr
+	@echo "built ... C_O_M_R_E_D.cia"
 #---------------------------------------------------------------------------------
 send: $(BUILD)
+	@echo "Sending to 3DS"
 	@3dslink $(TARGET).3dsx
 #---------------------------------------------------------------------------------
 run: $(BUILD)

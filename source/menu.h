@@ -257,13 +257,15 @@ namespace menu {
         }
         
         swkbdInit(&kb, SWKBD_TYPE_NUMPAD, 1, 8);
-        swkbdSetValidation(&kb, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
+        swkbdSetValidation(&kb, SWKBD_ANYTHING, 0, 0);
         swkbdSetPasswordMode(&kb, SWKBD_PASSWORD_NONE);
         swkbdSetFeatures(&kb, SWKBD_FIXED_WIDTH);
+        //swkbdSetButton(&kb, SWKBD_BUTTON_LEFT, "Go Back", false);
+        swkbdSetButton(&kb, SWKBD_BUTTON_RIGHT, "Go To Page", true);
         
         button = swkbdInputText(&kb, buf, sizeof(buf));
         
-        counter = atoi(buf);
+        if (strcmp(buf, "") != 0) counter = atoi(buf);
         
         if (counter < 1 || counter > mlisting->max_entries - takeaway) goto try_again;
     }

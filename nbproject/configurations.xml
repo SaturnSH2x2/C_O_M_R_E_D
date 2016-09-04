@@ -8,6 +8,7 @@
         <in>image.h</in>
         <in>main.cpp</in>
         <in>menu.h</in>
+        <in>resize.h</in>
         <in>sdfs.c</in>
       </df>
     </df>
@@ -42,7 +43,7 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <buildCommand>${MAKE} cia -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
         </makeTool>
@@ -146,6 +147,8 @@
             <pElem>build</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="source/resize.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/sdfs.c" ex="false" tool="0" flavor2="3">
         <cTool flags="1">
