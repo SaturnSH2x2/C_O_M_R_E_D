@@ -1,0 +1,3 @@
+Put comics here.
+
+Each comic is composed of a directory containing numbered images, similar to Manga Reader for the 3DS.  Make sure the images in each directory are no larger than 1024x1024.  You will have to manually resize the images.  I recommend Fotosizer for this:  http://www.fotosizer.com/

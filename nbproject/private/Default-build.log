@@ -1,0 +1,1 @@
+Makefile:6: *** "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM".  Stop.
