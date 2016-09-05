@@ -33,6 +33,7 @@
 #include "rf.h"
 #include "app.h"
 #include "button.h"
+#include "options.h"
 
 //#include "clear_png.h"
 
@@ -48,6 +49,9 @@ namespace menu {
     sftd_font *main_font;
     
     sf2d_texture *image;
+    
+    app::VIEWMODE_T def_orient;
+    std::string main_theme_str;
     
     // thanks, Marcus!
     struct directory_listing
@@ -291,9 +295,9 @@ namespace menu {
         sf2d_draw_texture(tex, 0, 0);
     }
     
-    void read_comic(std::string path, std::string zeroes, std::string theme) {        
+    void read_comic(std::string path, std::string zeroes) {        
         app::CALLBACK_T cb;
-        app::VIEWMODE_T vm; vm = app::TWO_SCREEN;
+        app::VIEWMODE_T vm; vm = def_orient;
         
         char *cpath = (char*) path.c_str();
 
@@ -332,7 +336,7 @@ namespace menu {
                 return;
             }
             
-            cb = app::run_img(image, theme, vm);
+            cb = app::run_img(image, main_theme.theme_name, vm);
             
             switch (cb) {
                 case app::NEXT:
@@ -362,7 +366,7 @@ namespace menu {
         sdfs_free();        
     }
     
-    void main_menu(std::string theme) {        
+    void main_menu() {        
         menu_cb = NADA;
         
         int tx, ty;
@@ -407,7 +411,7 @@ namespace menu {
         }
     }
     
-    void read_cb(std::string theme) {        
+    void read_cb() {        
         std::string path = "/data/C_O_M_R_E_D/comics";
         std::string orig_path = path;
         
@@ -477,7 +481,7 @@ namespace menu {
             is_comdir = is_comic_directory(select, zeroes);
                 
             if (is_comdir) {                
-                read_comic(select, zeroes, theme);
+                read_comic(select, zeroes);
             } else if (back == false) {
                 mlisting->Clear();
                 switch_dir(mlisting, (char*) select.c_str(), (char*)-1);
@@ -575,20 +579,19 @@ namespace menu {
     
     void run() {
         sftd_init();
-        std::string theme = "test";
-        //main_font = sftd_load_font_file(("/data/C_O_M_R_E_D/themes/" + theme + "/font.ttf").c_str());
+        opt::load_config(main_theme_str, def_orient);
         
-        main_theme = load_theme(theme);
+        main_theme = load_theme(main_theme_str);
         
         //MM_CALLBACK_T opt;
         
         while (aptMainLoop()) {
             //printf("Starting a new loop iteration...\n");
-            main_menu(theme);
+            main_menu();
         
             switch (menu_cb) {
                 case READ:
-                    read_cb(theme);
+                    read_cb();
                     break;
                 case DOWNLOAD:
                     download_cb();
