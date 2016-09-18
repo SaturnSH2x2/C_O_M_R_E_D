@@ -40,7 +40,7 @@
 namespace menu {
     PrintConsole top, bottom;
     
-    const int LIST_LIMIT   = 1000;
+    const int LIST_LIMIT   = 5000;
     const int MAX_ONSCREEN = 20;
     
     enum MM_CALLBACK_T {NADA, READ, DOWNLOAD, OPTIONS, EXIT};
@@ -51,6 +51,8 @@ namespace menu {
     sf2d_texture *image;
     
     app::VIEWMODE_T def_orient;
+    app::DPADMODE_T def_dpad_orient;
+    
     std::string main_theme_str;
     
     // thanks, Marcus!
@@ -104,6 +106,11 @@ namespace menu {
         
         sftd_free_font(theme.font);
         
+        //theme.read_btn->~Button();
+        //theme.dwnld_btn->~Button();
+        //theme.opt_btn->~Button();
+        //theme.exit_btn->~Button();
+        
         delete theme.read_btn;
         delete theme.dwnld_btn;
         delete theme.opt_btn;
@@ -146,10 +153,10 @@ namespace menu {
         
         theme.font = sftd_load_font_file(("/data/C_O_M_R_E_D/themes/" + theme_name + "/font.ttf").c_str());
         
-        theme.read_btn  = new btn::Button (theme_name, "read_btn.png", read, 20, 20);
-        theme.dwnld_btn = new btn::Button (theme_name, "download_btn.png", download, 20, 60);
-        theme.opt_btn   = new btn::Button (theme_name, "options_btn.png", options, 20, 100);
-        theme.exit_btn  = new btn::Button (theme_name, "exit_btn.png", exit, 20, 140);
+        theme.read_btn  = new btn::Button(theme_name, "read_btn.png", read, 20, 20);
+        theme.dwnld_btn = new btn::Button(theme_name, "download_btn.png", download, 20, 60);
+        theme.opt_btn   = new btn::Button(theme_name, "options_btn.png", options, 20, 100);
+        theme.exit_btn  = new btn::Button(theme_name, "exit_btn.png", exit, 20, 140);
         
         theme.theme_name = theme_name;
         
@@ -183,11 +190,11 @@ namespace menu {
         
         display_image(main_theme.bot_scr_bg_opt);
 
-        sftd_draw_text(main_theme.font, 4, 0, main_theme.bot_scr_color, 12, arg);
-        sftd_draw_text(main_theme.font, 4, 15, main_theme.bot_scr_color, 12, "--------------------------------------------");
+        sftd_draw_text(main_theme.font, 0, 0, main_theme.bot_scr_color, 12, arg);
+        sf2d_draw_rectangle(0, 20, 320, 5, main_theme.bot_scr_color);
             
         for (i = index; i < index + MAX_ONSCREEN; i++) {
-            buf = "  ";
+            buf = "";
             
             if (cursor == i) {
                 sf2d_draw_rectangle(0, ((i - index) * 15) + 30, 320, 15, main_theme.select_color);
@@ -195,10 +202,64 @@ namespace menu {
             
             buf = buf + list[i];
             
-            sftd_draw_text(main_theme.font, 4, ((i - index) * 15) + 30, main_theme.bot_scr_color, 12, buf.c_str());
+            sftd_draw_text(main_theme.font, 0, ((i - index) * 15) + 30, main_theme.bot_scr_color, 12, buf.c_str());
                 
             scr_indx += 1;
         }
+    }
+    
+    void display_menu(opt::opt_listing listings[], int num_of_listings, std::string arg) {
+        //sf2d_start_frame(GFX_TOP, GFX_LEFT);
+        //sf2d_end_frame();
+        //sf2d_swapbuffers();
+        
+        int i;
+        int cursor = 0;
+        
+        while (aptMainLoop()) {
+            hidScanInput();
+            u32 kDown = hidKeysDown();
+            
+            if (kDown & KEY_B) break;
+            if (kDown & KEY_UP)   cursor -= 1;
+            if (kDown & KEY_DOWN) cursor += 1;
+            
+            if (cursor > num_of_listings - 1) cursor = num_of_listings - 1;
+            if (cursor < 0)                   cursor = 0;
+            
+            opt::read_input_cb(&listings[cursor], kDown);
+            if (menu_cb == READ) break;
+            
+            sf2d_start_frame(GFX_TOP, GFX_LEFT);            
+            display_image(main_theme.top_scr_bg_opt);
+            sf2d_end_frame();
+            
+            sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);                        
+            
+            display_image(main_theme.bot_scr_bg_opt);
+            
+            sftd_draw_text(main_theme.font, 0, 0, main_theme.bot_scr_color, 12, arg.c_str());
+            sf2d_draw_rectangle(0, 20, 320, 5, main_theme.bot_scr_color);
+            
+            for (i = 0; i < num_of_listings; i++) {
+                //printf("Displaying iteration %d\n", i);
+                
+                if (i == cursor) sf2d_draw_rectangle(0, (i + 2) * 15, 320, 15, main_theme.select_color);
+                //sftd_draw_text(main_theme.font, 0, (i * 15), main_theme.bot_scr_color, 12, listings[i].description.c_str());
+                //sftd_draw_text(main_theme.font, (listings[i].description.length() * 15) + 10, (i * 15), main_theme.bot_scr_color, 12, listings[i].entries[listings[i].cursor].c_str());                
+                opt::display(&listings[i], (i + 2) * 15, main_theme.font, main_theme.bot_scr_color);
+            }
+            
+            sf2d_end_frame();
+            
+            sf2d_swapbuffers();
+        }
+        
+        //sf2d_start_frame(GFX_TOP, GFX_LEFT);
+        //display_image(main_theme.top_scr_bg_mm);
+        //sf2d_end_frame();
+        
+        //sf2d_swapbuffers();
     }
     
     bool is_comic_directory(std::string path, std::string &zeroes) {
@@ -336,7 +397,7 @@ namespace menu {
                 return;
             }
             
-            cb = app::run_img(image, main_theme.theme_name, vm);
+            cb = app::run_img(image, main_theme.theme_name, vm, def_dpad_orient);
             
             switch (cb) {
                 case app::NEXT:
@@ -550,36 +611,91 @@ namespace menu {
     }
     
     void options_cb() {
-        //sf2d_texture *top_scr_bg = load_theme_image(theme, "opt_top_scr_bg.png");
-        //consoleInit(GFX_BOTTOM, &bottom);
-        //consoleClear();
+        int num_of_entries = 3;
         
-        u32 kDown;
+        std::string dpad_entries[2];
+        dpad_entries[0] = "Left to Right (Comics)";
+        dpad_entries[1] = "Right to Left (Manga)";
         
-        while (aptMainLoop()) {
-            hidScanInput();
-            
-            kDown = hidKeysDown();
-            //u32 kHeld = hidKeysHeld();
-            
-            if (kDown & KEY_B) break;
-            
-            sf2d_start_frame(GFX_TOP, GFX_LEFT);
-            display_image(main_theme.top_scr_bg_opt);
-            sf2d_end_frame();
-            
-            sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-            sf2d_end_frame();
-            
-            //printf("\x1b[0;0Hayy sample text");
-            
-            sf2d_swapbuffers();
+        std::string starto_entries[3];
+        starto_entries[0] = "Upright";
+        starto_entries[1] = "Sideways (Left-Handed)";
+        starto_entries[2] = "Sideways (Right-Handed)";                
+        
+        opt::opt_listing *cur_list = new opt::opt_listing[num_of_entries];
+        cur_list[1] = opt::create_listing("D-Pad Page Turning - ", 2, dpad_entries);
+        cur_list[2] = opt::create_listing("Default Page Orientation - ", 3, starto_entries);
+        cur_list[0] = opt::create_listing("Change Current Theme", read);
+        
+        if (def_dpad_orient != app::NADA2 && def_dpad_orient != app::NOT_READ) cur_list[1].cursor = def_dpad_orient;
+        if (def_orient != app::ONE_SCREEN) cur_list[2].cursor = def_orient;
+        
+        display_menu(cur_list, 3, "Options Menu");
+        
+        opt::save_config(cur_list[2].cursor, cur_list[1].cursor, "test");
+        
+        //opt::delete_listing(cur_list[0]);
+        //opt::delete_listing(cur_list[1]);
+        //opt::delete_listing(cur_list[2]);           
+        
+        sf2d_start_frame(GFX_TOP, GFX_LEFT);
+        display_image(main_theme.top_scr_bg_mm);
+        sf2d_end_frame();
+        
+        sf2d_swapbuffers();
+        
+        // reload app with new settings
+        //opt::load_config(main_theme_str, def_orient, def_dpad_orient);
+        
+        switch (cur_list[2].cursor) {
+            case 0:
+                def_orient = app::TWO_SCREEN;
+                break;
+            case 1:
+                def_orient = app::TWO_SCREEN_L;
+                break;
+            case 2:
+                def_orient = app::TWO_SCREEN_R;
+                break;
+            default:
+                def_orient = app::TWO_SCREEN;
+                break;
         }
+        
+        switch (cur_list[0].cursor) {
+            case 0:
+                def_dpad_orient = app::LEFT_TO_RIGHT;
+                break;
+            case 1:
+                def_dpad_orient = app::RIGHT_TO_LEFT;
+                break;
+            default:
+                def_dpad_orient = app::LEFT_TO_RIGHT;
+                break;
+        }
+        
+        free_theme(main_theme);
+        main_theme = load_theme(main_theme_str);
+        
+        sf2d_start_frame(GFX_TOP, GFX_LEFT);
+        display_image(main_theme.top_scr_bg_opt);
+        sf2d_end_frame();
+        
+        sf2d_swapbuffers();
+        
+        //delete cur_list;
     }
     
     void run() {
+        //consoleInit(GFX_BOTTOM, &bottom);
+        
+        //restart_run:
+        
+        bool exit = false;
+                
         sftd_init();
-        opt::load_config(main_theme_str, def_orient);
+        opt::load_config(main_theme_str, def_orient, def_dpad_orient);
+        printf("File read successfully.\n");
         
         main_theme = load_theme(main_theme_str);
         
@@ -598,20 +714,24 @@ namespace menu {
                     break;
                 case OPTIONS:
                     options_cb();
+                    //exit = true;
+                    //goto out;
                     break;
                 case EXIT:
-                    return;
+                    //goto out;
+                    exit = true;
                     break;
                 default:
                     break;
             };
             
-           
-            //printf("End loop iteration.\n");
+            if (exit) break;
         }
         
+        //out:
+        
         //sftd_free_font(main_font);
-        free_theme(main_theme);
+        //free_theme(main_theme);
         sftd_fini();
         
         sf2d_free_texture(image);
@@ -620,8 +740,8 @@ namespace menu {
         mlisting->Clear();
         delete mlisting;
         
+        return;
     }
-
 }
 
 #endif /* MENU_H */

@@ -30,6 +30,7 @@ using namespace std;
 namespace btn {
     class Button {
     public:
+        Button();
         Button(std::string theme, std::string file, void (*cb)(), float px, float py);
         ~Button();
         
@@ -45,26 +46,31 @@ namespace btn {
         float py;
     };
     
+    Button::Button() {
+        // yeah, really nothing...
+    }
+    
     Button::Button(std::string theme, std::string file, void (*cb)(), float px, float py) {
         std::string filename = "/data/C_O_M_R_E_D/themes/" + theme + "/" + file;
         const char *filename_c = filename.c_str();
-        //int i = 0;
-        
-        //printf (filename_c);
-        //printf("\n");
-        
-        //while(i < 50000000) {
-        //    i += 1;
-        //}
         
         this->tex = sfil_load_PNG_file(filename_c, SF2D_PLACE_RAM);
         this->callback = cb;
         
         this->px = px;
         this->py = py;
+
+    }
+    
+    void define_button(Button *btn, std::string theme, std::string file, void (*cb)(), float px, float py) {
+        std::string filename = "/data/C_O_M_R_E_D/themes/" + theme + "/" + file;
+        //const char *filename_c = filename.c_str();
         
-        //printf(this->tex == NULL);
-        //printf("\n");
+        btn->tex = sfil_load_PNG_file(filename.c_str(), SF2D_PLACE_RAM);
+        btn->callback = cb;
+        
+        btn->px = px;
+        btn->py = py;
     }
     
     Button::~Button() {

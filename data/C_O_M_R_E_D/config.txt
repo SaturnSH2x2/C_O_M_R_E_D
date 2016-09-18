@@ -2,4 +2,7 @@
 test
 
 [defaultOrientation]
-right_hand
+upright
+
+[dPadOrientation]
+jp

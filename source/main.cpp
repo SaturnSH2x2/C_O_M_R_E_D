@@ -15,6 +15,8 @@ int main(int argc, char **argv)
 {   
 	//Initialize the sf2d lib
 	sf2d_init();
+        
+        //bool exit = false;
         //acInit();
 	//Set the background color
 	//sf2d_set_clear_color(RGBA8(0x40, 0x40, 0x40, 0xFF));
@@ -34,10 +36,8 @@ int main(int argc, char **argv)
             //test2 = menu::main_menu(theme);
             
             //if (test2) break;
-         //   menu::run();
-	//}
         
-        menu::run();
+        menu::run();     
 
 	sf2d_fini();
 	return 0;

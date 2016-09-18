@@ -29,7 +29,8 @@ using namespace btn;
 
 namespace app {
     enum CALLBACK_T {NADA = 0, PREV, NEXT, MENU, SWITCH_MODE, SWITCH_PAGE};
-    enum VIEWMODE_T {ONE_SCREEN, TWO_SCREEN, TWO_SCREEN_L, TWO_SCREEN_R};
+    enum VIEWMODE_T {TWO_SCREEN = 0, TWO_SCREEN_L = 1, TWO_SCREEN_R = 2, ONE_SCREEN};
+    enum DPADMODE_T {LEFT_TO_RIGHT = 0, RIGHT_TO_LEFT = 1, NADA2, NOT_READ};
     
     const int IN  = 0;
     const int OUT = 1;
@@ -41,7 +42,7 @@ namespace app {
         
     float loc_x = 0.0;
     float loc_y = 0.0;
-    float scale = 400.0;
+    float scale;
         
     const float SPEED = 8.0;
     const float SC_SPEED = 10.0;
@@ -111,7 +112,9 @@ namespace app {
   
     PrintConsole top, bottom;
     
-    CALLBACK_T image_one_screen(sf2d_texture *image, std::string theme, VIEWMODE_T mode) {
+    CALLBACK_T image_one_screen(sf2d_texture *image, std::string theme, VIEWMODE_T mode, DPADMODE_T dpad) {
+        scale = image->width / 2.0F;
+        
         switch (mode) {
             case (TWO_SCREEN_R):   // TWO_SCREEN_L/R
                 loc_x = -100;
@@ -204,24 +207,72 @@ namespace app {
                 if (kHeld & KEY_CPAD_LEFT)  loc_x -= SPEED;
                 if (kHeld & KEY_CPAD_RIGHT) loc_x += SPEED;
                 
-                if (kDown & KEY_DLEFT)  prev_pg();
-                if (kDown & KEY_DRIGHT) next_pg();                
+                if (kDown & KEY_DLEFT) {
+                    if (dpad == LEFT_TO_RIGHT) {
+                        prev_pg();
+                    } else if (dpad == RIGHT_TO_LEFT) {
+                        next_pg();
+                    } else if (dpad == NADA2) {
+                        next_pg();
+                    }
+                }
+                if (kDown & KEY_DRIGHT) {
+                    if (dpad == LEFT_TO_RIGHT)  {
+                        next_pg();
+                    } else if (dpad == RIGHT_TO_LEFT) {
+                        prev_pg();
+                    } else if (dpad == NADA2) {
+                        next_pg();
+                    }
+                }
             } else if (mode == TWO_SCREEN_R) {
                 if (kHeld & KEY_CPAD_UP)    loc_y += SPEED;
                 if (kHeld & KEY_CPAD_DOWN)  loc_y -= SPEED;
                 if (kHeld & KEY_CPAD_LEFT)  loc_x += SPEED;
                 if (kHeld & KEY_CPAD_RIGHT) loc_x -= SPEED;
                 
-                if (kDown & KEY_DUP)  prev_pg();
-                if (kDown & KEY_DDOWN) next_pg(); 
+                if (kDown & KEY_DUP) {
+                    if (dpad == LEFT_TO_RIGHT) {
+                        prev_pg();
+                    } else if (dpad == RIGHT_TO_LEFT) {
+                        next_pg();
+                    } else if (dpad == NADA2) {
+                        next_pg();
+                    }
+                }
+                if (kDown & KEY_DDOWN) {
+                    if (dpad == LEFT_TO_RIGHT) {
+                        next_pg();
+                    } else if (dpad == RIGHT_TO_LEFT) {
+                        prev_pg();
+                    } else if (dpad == NADA2) {
+                        next_pg();
+                    }
+                }
             } else if (mode == TWO_SCREEN_L) {
                 if (kHeld & KEY_CPAD_UP)    loc_y += SPEED;
                 if (kHeld & KEY_CPAD_DOWN)  loc_y -= SPEED;
                 if (kHeld & KEY_CPAD_LEFT)  loc_x += SPEED;
                 if (kHeld & KEY_CPAD_RIGHT) loc_x -= SPEED;
                 
-                if (kDown & KEY_DDOWN)  prev_pg();
-                if (kDown & KEY_DUP) next_pg(); 
+                if (kDown & KEY_DDOWN) {
+                    if (dpad == LEFT_TO_RIGHT) {
+                        prev_pg();
+                    } else if (dpad == RIGHT_TO_LEFT) {
+                        next_pg();
+                    } else if (dpad == NADA2) {
+                        next_pg();
+                    }
+                }
+                if (kDown & KEY_DUP) {
+                    if (dpad == LEFT_TO_RIGHT) {
+                        next_pg();
+                    } else if (dpad == RIGHT_TO_LEFT) {
+                        prev_pg();
+                    } else if (dpad == NADA2) {
+                        next_pg();
+                    }
+                }
             }
             
             if (kHeld & KEY_Y) zoom(IN);
@@ -261,15 +312,14 @@ namespace app {
             
             if (function_cb != NADA) break;
         }
-        
-        //delete image;
+
         return function_cb;
     }
     
-    CALLBACK_T run_img (sf2d_texture *image, std::string theme, VIEWMODE_T &mode) {
+    CALLBACK_T run_img (sf2d_texture *image, std::string theme, VIEWMODE_T &mode, DPADMODE_T &dpad) {
         CALLBACK_T cb;
         while (true) {
-            cb = image_one_screen(image, theme, mode);
+            cb = image_one_screen(image, theme, mode, dpad);
             //consoleInit(GFX_BOTTOM, &bottom);
             //consoleClear();
             //printf("Exited loop.\n");
@@ -302,7 +352,7 @@ namespace app {
 
     }
     
-    CALLBACK_T run_img (std::string path, char ext[16], std::string theme, VIEWMODE_T &mode) {
+    CALLBACK_T run_img (std::string path, char ext[16], std::string theme, VIEWMODE_T &mode, DPADMODE_T &dpad) {
         sf2d_texture *image;
         CALLBACK_T cb;
         
@@ -317,7 +367,7 @@ namespace app {
                 return MENU;
             }
         
-        cb = run_img(image, theme, mode);
+        cb = run_img(image, theme, mode, dpad);
         sf2d_free_texture(image);
         
         return cb;
