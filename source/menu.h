@@ -645,8 +645,9 @@ namespace menu {
         sf2d_swapbuffers();
         
         // reload app with new settings
-        //opt::load_config(main_theme_str, def_orient, def_dpad_orient);
+        opt::load_config(main_theme_str, def_orient, def_dpad_orient);
         
+        /*
         switch (cur_list[2].cursor) {
             case 0:
                 def_orient = app::TWO_SCREEN;
@@ -673,6 +674,7 @@ namespace menu {
                 def_dpad_orient = app::LEFT_TO_RIGHT;
                 break;
         }
+        */
         
         free_theme(main_theme);
         main_theme = load_theme(main_theme_str);
@@ -697,6 +699,13 @@ namespace menu {
         opt::load_config(main_theme_str, def_orient, def_dpad_orient);
         printf("File read successfully.\n");
         
+        // pause so I can read the debug text
+        //while (aptMainLoop()) {
+        //    hidScanInput();
+        //    u32 kDown = hidKeysDown();
+        //    if (kDown & KEY_B) break;
+        //}
+        
         main_theme = load_theme(main_theme_str);
         
         //MM_CALLBACK_T opt;
@@ -718,8 +727,7 @@ namespace menu {
                     //goto out;
                     break;
                 case EXIT:
-                    //goto out;
-                    exit = true;
+                    return;
                     break;
                 default:
                     break;

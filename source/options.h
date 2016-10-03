@@ -106,7 +106,9 @@ namespace opt {
                     
                     cur_line += 1;
                     
-                    printf("Read next line.\n");
+                    printf("Read next line: ");
+                    printf(buf.c_str());
+                    printf("\n");
                     
                     switch (header_index) {
                         case 0:
@@ -146,12 +148,15 @@ namespace opt {
                             }
                             switch (match_index) {
                                 case 0:
+                                    printf("Left to right reading.\n");
                                     dpad = app::LEFT_TO_RIGHT;
                                     break;
                                 case 1:
+                                    printf("Right to left reading.\n");
                                     dpad = app::RIGHT_TO_LEFT;
                                     break;
                                 default:
+                                    printf("Couldn't read orientation!\n");
                                     dpad = app::DPADMODE_T::NADA2;
                                     break;
                             };

@@ -21,5 +21,17 @@
             <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/rf.h</file>
             <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/menu.h</file>
         </group>
+        <group name="C_O_M_R_E_D">
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/sdfs.c</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/app.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/button.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/image.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/resize.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/main.cpp</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/sdfs.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/options.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/rf.h</file>
+            <file>file:/home/fluffy/Documents/3ds_homebrew/Projects/My_Projects/C_O_M_R_E_D/source/menu.h</file>
+        </group>
     </open-files>
 </project-private>
